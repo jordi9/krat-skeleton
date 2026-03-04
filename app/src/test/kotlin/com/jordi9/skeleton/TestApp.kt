@@ -1,0 +1,73 @@
+package com.jordi9.skeleton
+
+import com.jordi9.krat.jdbi.DatabaseConfig
+import com.jordi9.krat.jdbi.JdbiProvider
+import com.jordi9.krat.time.TimeClock
+import com.jordi9.skeleton.feature.greeting.inbound.GreetingConfig
+import com.jordi9.skeleton.shared.outbound.metrics.MeterRegistryProvider
+import io.kotest.core.listeners.ProjectListener
+import io.ktor.client.HttpClient
+import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.config.ApplicationConfig
+import io.ktor.server.config.mergeWith
+import io.ktor.server.testing.TestApplication
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
+
+val SkeletonTestApp = createTestApp(stubs = Stubs)
+
+/**
+ * Creates a test application that runs the exact same [server] code path as production —
+ * no test-only modules, no conditional logic, no "if (test)" branches.
+ *
+ * Inspired by Ratpack's MainClassUnderTest: the application code is identical,
+ * only the wiring differs. We bypass the production [Registry] factory and use
+ * the primary constructor directly to inject stubs and in-memory providers.
+ *
+ * This works because application-test.conf sets `modules = []`, preventing Ktor
+ * from auto-loading the module with production dependencies.
+ */
+fun createTestApp(stubs: TestStubs): TestApplication = TestApplication {
+  environment {
+    config = defaultConfig()
+  }
+  application {
+    val databaseConfig = DatabaseConfig(url = InMemoryDB.dbUrl, user = "test")
+
+    server(
+      greeting = GreetingConfig(message = "Test"),
+      database = databaseConfig,
+      tracing = stubs.openTelemetry.config,
+      registry = Registry(
+        notificationClient = stubs.notification,
+        jdbiProvider = JdbiProvider(
+          config = databaseConfig,
+          openTelemetry = stubs.openTelemetry.provider.get()
+        ),
+        timeClock = stubs.clock,
+        meterRegistryProvider = MeterRegistryProvider(),
+        openTelemetryProvider = stubs.openTelemetry.provider
+      )
+    )
+  }
+}
+
+fun httpClient(): HttpClient = SkeletonTestApp.createClient {
+  install(ClientContentNegotiation) {
+    json()
+  }
+}
+
+fun sharedClock(): TimeClock = Stubs.clock
+
+object SkeletonTestAppExtension : ProjectListener {
+  override suspend fun beforeProject() {
+    SkeletonTestApp.start()
+  }
+
+  override suspend fun afterProject() {
+    SkeletonTestApp.stop()
+  }
+}
+
+private fun defaultConfig() = ApplicationConfig("application.conf")
+  .mergeWith(ApplicationConfig(("application-test.conf")))

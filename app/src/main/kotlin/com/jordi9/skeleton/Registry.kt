@@ -1,0 +1,57 @@
+package com.jordi9.skeleton
+
+import com.jordi9.krat.jdbi.DatabaseConfig
+import com.jordi9.krat.jdbi.JdbiProvider
+import com.jordi9.krat.otel.OpenTelemetryConfig
+import com.jordi9.krat.otel.OpenTelemetryProvider
+import com.jordi9.krat.otel.canonicaltraces.LoggingSpanProcessor
+import com.jordi9.krat.time.SystemTime
+import com.jordi9.krat.time.TimeClock
+import com.jordi9.skeleton.feature.item.domain.NotificationClient
+import com.jordi9.skeleton.feature.item.outbound.LogNotificationClient
+import com.jordi9.skeleton.feature.item.outbound.registerItemMappers
+import com.jordi9.skeleton.shared.outbound.metrics.MeterRegistryProvider
+import io.micrometer.core.instrument.binder.MeterBinder
+import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
+import io.opentelemetry.api.OpenTelemetry
+import org.jdbi.v3.core.Jdbi
+
+class Registry(
+  val notificationClient: NotificationClient,
+  val timeClock: TimeClock,
+  private val openTelemetryProvider: OpenTelemetryProvider,
+  private val meterRegistryProvider: MeterRegistryProvider,
+  private val jdbiProvider: JdbiProvider
+) : AutoCloseable {
+
+  val openTelemetry: OpenTelemetry get() = openTelemetryProvider.get()
+  val meterRegistry: PrometheusMeterRegistry get() = meterRegistryProvider.get()
+  val meterBinders: List<MeterBinder> get() = meterRegistryProvider.meterBinders
+
+  val jdbi: Jdbi by lazy {
+    jdbiProvider.get().also(::registerItemMappers)
+  }
+
+  override fun close() {
+    jdbiProvider.close()
+    openTelemetryProvider.close()
+    meterRegistryProvider.close()
+  }
+}
+
+fun Registry(database: DatabaseConfig, tracing: OpenTelemetryConfig): Registry {
+  val openTelemetryProvider = OpenTelemetryProvider(tracing, LoggingSpanProcessor(tracing.logFormat))
+  val meterRegistryProvider = MeterRegistryProvider()
+
+  return Registry(
+    notificationClient = LogNotificationClient(openTelemetryProvider.get()),
+    jdbiProvider = JdbiProvider(
+      config = database,
+      openTelemetry = openTelemetryProvider.get(),
+      meterRegistry = meterRegistryProvider.get()
+    ),
+    timeClock = SystemTime,
+    meterRegistryProvider = meterRegistryProvider,
+    openTelemetryProvider = openTelemetryProvider
+  )
+}

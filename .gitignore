@@ -1,0 +1,23 @@
+# Gradle
+.gradle
+build
+.kotlin/
+
+# IDE
+.idea/
+*.iml
+
+# Claude
+.claude/*
+!.claude/commands/
+!.claude/settings.json
+
+# Database
+app/*.db
+*.db
+
+# Log files
+logs/
+
+# Local config overrides (only main resources, not test shadow file)
+app/src/main/resources/application-local.conf
