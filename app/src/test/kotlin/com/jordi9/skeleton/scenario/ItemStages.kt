@@ -1,13 +1,13 @@
 package com.jordi9.skeleton.scenario
 
 import com.jordi9.kogiven.StageContext
-import com.jordi9.skeleton.JsonResponse
+import com.jordi9.krat.pack.test.JsonResponse
+import com.jordi9.krat.pack.test.toJsonResponse
 import com.jordi9.skeleton.NotificationStub
 import com.jordi9.skeleton.feature.item.domain.ItemId
 import com.jordi9.skeleton.fixture.Items
 import com.jordi9.skeleton.httpClient
 import com.jordi9.skeleton.required
-import com.jordi9.skeleton.toJsonResponse
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.get

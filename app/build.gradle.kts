@@ -43,15 +43,16 @@ dependencies {
   testImplementation(libs.ktor.client.content.negotiation)
   testImplementation(libs.kogiven)
   testImplementation(libs.krat.time.testlib)
+  testImplementation(libs.krat.pack.testlib)
   testImplementation(libs.krat.logging.testlib)
   testImplementation(libs.krat.otel.testlib)
 }
 
 spotless {
-  // Uncomment after first commit: ratchetFrom("origin/main")
   kotlin {
     ktlint("1.8.0")
   }
+  ratchetFrom("origin/main")
 }
 
 application { mainClass.set("io.ktor.server.netty.EngineMain") }
