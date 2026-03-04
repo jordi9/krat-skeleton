@@ -12,30 +12,12 @@ This skill defines how this project works: layer placement, TDD workflow, testin
 
 ```bash
 ./gradlew spotlessApply  # Format code (always run first)
-./gradlew build          # Build
+./gradlew build          # Build + test
 ./gradlew test           # Run tests
 ./gradlew run            # Run application
 ```
 
-## Project-Specific
+## Reminders
 
-### OpenAPI
-
-Update `app/src/main/resources/static/openapi.yaml` when adding/changing handlers or DTOs.
-
-## Tech Stack
-
-- Kotlin 2.3.0, Java 25
-- Ktor 3.3.2 (Netty)
-- SQLite + JDBI
-- Kotest 6.0.5 + kogiven
-- Flyway migrations
-
-## Docker
-
-Production runs in Docker (Alpine-based). See `Dockerfile` for image definition.
-
-## Database
-
-- SQLite file: `skeleton.db` (in-memory for tests)
+- Update `app/src/main/resources/static/openapi.yaml` when adding/changing handlers or DTOs.
 - Migrations: `app/src/main/resources/db/migration/V{version}__{description}.sql`
