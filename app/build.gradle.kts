@@ -6,6 +6,10 @@ plugins {
   application
 }
 
+repositories {
+  mavenCentral()
+}
+
 dependencies {
   implementation(platform(libs.ktor.bom))
   implementation(platform(libs.micrometer.bom))
