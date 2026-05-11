@@ -1,13 +1,13 @@
 package com.jordi9.skeleton.scenario
 
 import com.jordi9.kogiven.StageContext
+import com.jordi9.kogiven.required
 import com.jordi9.krat.pack.test.JsonResponse
 import com.jordi9.krat.pack.test.toJsonResponse
 import com.jordi9.skeleton.NotificationStub
 import com.jordi9.skeleton.feature.item.domain.ItemId
 import com.jordi9.skeleton.fixture.Items
 import com.jordi9.skeleton.httpClient
-import com.jordi9.skeleton.required
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
 import io.ktor.client.request.get
@@ -21,7 +21,7 @@ class ItemContext {
   var status: HttpStatusCode by required()
   var items: JsonResponse by required()
   var item: JsonResponse by required()
-  var insertedItemId: ItemId by required()
+  val insertedItemIds: MutableList<ItemId> = mutableListOf()
 }
 
 class GivenItem : StageContext<GivenItem, ItemContext>() {
@@ -32,7 +32,7 @@ class GivenItem : StageContext<GivenItem, ItemContext>() {
 
   fun `an item exists`(name: String, description: String? = null) = apply {
     val row = Items.inserted(name = name, description = description)
-    ctx.insertedItemId = row.id
+    ctx.insertedItemIds.add(row.id)
   }
 }
 
@@ -63,7 +63,7 @@ class WhenItem : StageContext<WhenItem, ItemContext>() {
   }
 
   suspend fun `getting item by id`() = apply {
-    val response = httpClient().get("/api/v1/items/${ctx.insertedItemId.value}")
+    val response = httpClient().get("/api/v1/items/${ctx.insertedItemIds.last().value}")
     ctx.status = response.status
     if (response.status == HttpStatusCode.OK) {
       ctx.item = response.toJsonResponse()

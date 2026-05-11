@@ -1,10 +1,10 @@
 package com.jordi9.skeleton.scenario
 
 import com.jordi9.kogiven.StageContext
+import com.jordi9.kogiven.required
 import com.jordi9.krat.jdbi.handleSync
 import com.jordi9.skeleton.httpClient
 import com.jordi9.skeleton.jdbi
-import com.jordi9.skeleton.required
 import io.kotest.matchers.comparables.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain

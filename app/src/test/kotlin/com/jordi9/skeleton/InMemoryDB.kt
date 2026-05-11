@@ -1,7 +1,7 @@
 package com.jordi9.skeleton
 
+import com.jordi9.kogiven.required
 import com.jordi9.skeleton.fixture.ItemTable
-import com.jordi9.skeleton.required
 import io.kotest.core.listeners.AfterEachListener
 import io.kotest.core.test.TestCase
 import io.kotest.engine.test.TestResult
