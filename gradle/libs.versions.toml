@@ -1,5 +1,5 @@
 [versions]
-kotlin = "2.3.10"
+kotlin = "2.3.21"
 micrometer = "1.15.0"
 opentelemetry = "1.61.0"
 opentelemetry-alpha = "1.61.0-alpha"
