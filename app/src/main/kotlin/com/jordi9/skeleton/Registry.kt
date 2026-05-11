@@ -4,7 +4,6 @@ import com.jordi9.krat.jdbi.DatabaseConfig
 import com.jordi9.krat.jdbi.JdbiProvider
 import com.jordi9.krat.otel.OpenTelemetryConfig
 import com.jordi9.krat.otel.OpenTelemetryProvider
-import com.jordi9.krat.otel.canonicaltraces.LoggingSpanProcessor
 import com.jordi9.krat.time.SystemTime
 import com.jordi9.krat.time.TimeClock
 import com.jordi9.skeleton.feature.item.domain.NotificationClient
@@ -40,7 +39,7 @@ class Registry(
 }
 
 fun Registry(database: DatabaseConfig, tracing: OpenTelemetryConfig): Registry {
-  val openTelemetryProvider = OpenTelemetryProvider(tracing, LoggingSpanProcessor(tracing.logFormat))
+  val openTelemetryProvider = OpenTelemetryProvider(tracing)
   val meterRegistryProvider = MeterRegistryProvider()
 
   return Registry(

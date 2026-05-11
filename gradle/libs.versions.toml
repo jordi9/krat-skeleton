@@ -1,7 +1,8 @@
 [versions]
 kotlin = "2.3.10"
 micrometer = "1.15.0"
-opentelemetry = "1.57.0"
+opentelemetry = "1.61.0"
+opentelemetry-alpha = "1.61.0-alpha"
 
 [libraries]
 ktor-bom = "io.ktor:ktor-bom:3.3.2"
@@ -29,6 +30,7 @@ micrometer-core = { module = "io.micrometer:micrometer-core" }
 micrometer-registry-prometheus = { module = "io.micrometer:micrometer-registry-prometheus" }
 
 opentelemetry-bom = { module = "io.opentelemetry:opentelemetry-bom", version.ref = "opentelemetry" }
+opentelemetry-bom-alpha = { module = "io.opentelemetry:opentelemetry-bom-alpha", version.ref = "opentelemetry-alpha" }
 opentelemetry-api = { module = "io.opentelemetry:opentelemetry-api" }
 opentelemetry-sdk = { module = "io.opentelemetry:opentelemetry-sdk" }
 opentelemetry-ktor = "io.opentelemetry.instrumentation:opentelemetry-ktor-3.0:2.21.0-alpha"
@@ -38,8 +40,7 @@ krat-pack-cors = "com.jordi9:krat-pack-cors:0.1.0"
 krat-pack-testlib = "com.jordi9:krat-pack-testlib:0.1.0"
 krat-logging = "com.jordi9:krat-logging:0.1.0"
 krat-logging-testlib = "com.jordi9:krat-logging-testlib:0.1.0"
-krat-otel = "com.jordi9:krat-otel:0.1.0"
-krat-otel-canonicalTraces = "com.jordi9:krat-otel-canonical-traces:0.1.0"
+krat-otel = "com.jordi9:krat-otel:1.1.0"
 krat-time = "com.jordi9:krat-time:0.1.0"
 krat-time-testlib = "com.jordi9:krat-time-testlib:0.1.0"
 krat-otel-testlib = "com.jordi9:krat-otel-testlib:0.1.0"

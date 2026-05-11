@@ -14,12 +14,12 @@ dependencies {
   implementation(platform(libs.ktor.bom))
   implementation(platform(libs.micrometer.bom))
   implementation(platform(libs.opentelemetry.bom))
+  implementation(platform(libs.opentelemetry.bom.alpha))
 
   implementation(libs.krat.pack.core)
   implementation(libs.krat.pack.cors)
   implementation(libs.krat.logging)
   implementation(libs.krat.otel)
-  implementation(libs.krat.otel.canonicalTraces)
   implementation(libs.krat.time)
   implementation(libs.krat.jdbi)
   implementation(libs.ktor.server.core)
