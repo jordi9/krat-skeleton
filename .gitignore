@@ -1,23 +1,13 @@
-# Gradle
 .gradle
 build
-.kotlin/
+.kotlin
+.idea
+.claude/settings.local.json
 
-# IDE
-.idea/
-*.iml
-
-# Claude
-.claude/*
-!.claude/commands/
-!.claude/settings.json
-
-# Database
-app/*.db
+logs
 *.db
 
-# Log files
-logs/
-
-# Local config overrides (only main resources, not test shadow file)
+# Local config overrides (only main resources)
 app/src/main/resources/application-local.conf
+
+
