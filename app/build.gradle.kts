@@ -51,7 +51,6 @@ dependencies {
   testImplementation(libs.krat.pack.testlib)
   testImplementation(libs.krat.logging.testlib)
   testImplementation(libs.krat.otel.testlib)
-  testImplementation(libs.kaml)
 }
 
 spotless {

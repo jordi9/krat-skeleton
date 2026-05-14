@@ -21,8 +21,6 @@ kotest-bom = "io.kotest:kotest-bom:6.0.5"
 kotest-runner-junit5 = { module = "io.kotest:kotest-runner-junit5" }
 kotest-assertions-core = { module = "io.kotest:kotest-assertions-core" }
 
-kaml = "com.charleskorn.kaml:kaml:0.61.0"
-
 logback = "ch.qos.logback:logback-classic:1.5.19"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3"
 sqlite-jdbc = "org.xerial:sqlite-jdbc:3.50.3.0"
@@ -40,7 +38,7 @@ opentelemetry-ktor = "io.opentelemetry.instrumentation:opentelemetry-ktor-3.0:2.
 
 krat-pack-core = "com.jordi9:krat-pack-core:0.1.1"
 krat-pack-cors = "com.jordi9:krat-pack-cors:0.1.0"
-krat-pack-testlib = "com.jordi9:krat-pack-testlib:0.1.0"
+krat-pack-testlib = "com.jordi9:krat-pack-testlib:1.0.0"
 krat-logging = "com.jordi9:krat-logging:0.1.0"
 krat-logging-testlib = "com.jordi9:krat-logging-testlib:0.1.0"
 krat-otel = "com.jordi9:krat-otel:1.1.0"

@@ -3,6 +3,7 @@ package com.jordi9.skeleton.scenario
 import com.jordi9.kogiven.StageContext
 import com.jordi9.kogiven.required
 import com.jordi9.krat.jdbi.handleSync
+import com.jordi9.krat.pack.test.OpenApiSpec
 import com.jordi9.skeleton.SkeletonTestApp
 import com.jordi9.skeleton.httpClient
 import com.jordi9.skeleton.jdbi
