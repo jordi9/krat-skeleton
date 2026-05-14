@@ -18,14 +18,17 @@ import com.jordi9.skeleton.shared.inbound.health.DatabaseHealthCheck
 import com.jordi9.skeleton.shared.inbound.metrics.MetricsHandler
 import com.jordi9.skeleton.shared.outbound.db.runDatabaseMigrations
 import com.jordi9.skeleton.shared.outbound.tracing.withStartupTrace
+import io.github.smiley4.ktorredoc.redoc
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationStopped
 import io.ktor.server.application.install
+import io.ktor.server.http.content.staticResources
 import io.ktor.server.metrics.micrometer.MicrometerMetrics
 import io.ktor.server.netty.EngineMain
 import io.ktor.server.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.server.routing.Routing
+import io.ktor.server.routing.route
 import io.ktor.server.routing.routing
 import io.opentelemetry.instrumentation.ktor.v3_0.KtorServerTelemetry
 
@@ -65,6 +68,14 @@ fun Application.routes(greeting: GreetingConfig, registry: Registry) {
 
     get("/metrics", MetricsHandler(registry))
     installHealthChecks(registry)
+
+    route("docs") {
+      redoc("/static/openapi.yaml") {
+        pageTitle = "Skeleton API Documentation"
+      }
+    }
+
+    staticResources("/static", "static")
   }
 }
 

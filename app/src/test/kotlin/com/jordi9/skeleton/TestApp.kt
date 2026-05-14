@@ -8,6 +8,7 @@ import com.jordi9.skeleton.shared.outbound.metrics.MeterRegistryProvider
 import io.kotest.core.listeners.ProjectListener
 import io.ktor.client.HttpClient
 import io.ktor.serialization.kotlinx.json.json
+import io.ktor.server.application.Application
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.mergeWith
 import io.ktor.server.testing.TestApplication
