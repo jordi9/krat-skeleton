@@ -17,7 +17,7 @@ import com.jordi9.skeleton.shared.inbound.handler.installErrorHandling
 import com.jordi9.skeleton.shared.inbound.health.DatabaseHealthCheck
 import com.jordi9.skeleton.shared.inbound.metrics.MetricsHandler
 import com.jordi9.skeleton.shared.outbound.db.runDatabaseMigrations
-import com.jordi9.skeleton.shared.outbound.tracing.withStartupTrace
+import com.jordi9.skeleton.shared.outbound.tracing.withStartupTracer
 import io.github.smiley4.ktorredoc.redoc
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -43,8 +43,8 @@ fun Application.server(
   cors: CorsConfig = config("cors"),
   registry: Registry = Registry(database, tracing)
 ) {
-  registry.openTelemetry.withStartupTrace("skeleton") {
-    runDatabaseMigrations(database.url)
+  withStartupTracer(registry.openTelemetry, tracing.serviceName) {
+    runDatabaseMigrations(this, database.url)
 
     installContentNegotiation()
     installCors(cors)
