@@ -2,6 +2,7 @@ package com.jordi9.skeleton
 
 import com.jordi9.krat.jdbi.DatabaseConfig
 import com.jordi9.krat.jdbi.JdbiProvider
+import com.jordi9.krat.time.FixedTime
 import com.jordi9.krat.time.TimeClock
 import com.jordi9.skeleton.feature.greeting.inbound.GreetingConfig
 import com.jordi9.skeleton.shared.outbound.metrics.MeterRegistryProvider
@@ -12,7 +13,12 @@ import io.ktor.server.application.Application
 import io.ktor.server.config.ApplicationConfig
 import io.ktor.server.config.mergeWith
 import io.ktor.server.testing.TestApplication
+import java.time.Instant
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation as ClientContentNegotiation
+
+private object SharedClock {
+  val value = FixedTime(Instant.parse("2006-01-02T15:04:05Z"))
+}
 
 val SkeletonTestApp = createTestApp(stubs = Stubs)
 
@@ -58,7 +64,7 @@ fun httpClient(): HttpClient = SkeletonTestApp.createClient {
   }
 }
 
-fun sharedClock(): TimeClock = Stubs.clock
+fun sharedClock(): TimeClock = SharedClock.value
 
 object SkeletonTestAppExtension : ProjectListener {
   override suspend fun beforeProject() {

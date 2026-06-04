@@ -6,7 +6,8 @@ import com.jordi9.krat.pack.test.JsonResponse
 import com.jordi9.krat.pack.test.toJsonResponse
 import com.jordi9.skeleton.NotificationStub
 import com.jordi9.skeleton.feature.item.domain.ItemId
-import com.jordi9.skeleton.fixture.Items
+import com.jordi9.skeleton.fixture.ItemExample
+import com.jordi9.skeleton.fixture.ItemTable
 import com.jordi9.skeleton.httpClient
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.shouldBe
@@ -30,7 +31,8 @@ class GivenItem : StageContext<GivenItem, ItemContext>() {
   }
 
   fun `an item exists`(name: String, description: String? = null) = apply {
-    val row = Items.inserted(name = name, description = description)
+    val item = ItemExample(name = name, description = description)
+    val row = ItemTable.insert(item)
     ctx.insertedItemIds.add(row.id)
   }
 }

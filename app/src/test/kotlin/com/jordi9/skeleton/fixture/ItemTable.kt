@@ -5,16 +5,11 @@ import com.jordi9.skeleton.feature.item.domain.ItemId
 import com.jordi9.skeleton.jdbi
 import org.jdbi.v3.core.kotlin.mapTo
 
-data class ItemRow(val id: ItemId, val name: String, val description: String?)
+data class ItemRow(val id: ItemId)
 
 object ItemTable {
 
-  fun insert(
-    name: String = "Test Item",
-    description: String? = null,
-    createdAt: Long = 1136214245000,
-    updatedAt: Long = 1136214245000
-  ): ItemRow {
+  fun insert(example: ItemExample): ItemRow {
     val id = jdbi().handleSync {
       createQuery(
         """
@@ -23,22 +18,14 @@ object ItemTable {
         RETURNING id
         """.trimIndent()
       )
-        .bind("name", name)
-        .bind("description", description)
-        .bind("createdAt", createdAt)
-        .bind("updatedAt", updatedAt)
+        .bind("name", example.name)
+        .bind("description", example.description)
+        .bind("createdAt", example.createdAt.toEpochMilli())
+        .bind("updatedAt", example.updatedAt.toEpochMilli())
         .mapTo<Long>()
         .one()
     }
-    return ItemRow(id = ItemId(id), name = name, description = description)
-  }
-
-  fun findById(id: ItemId): ItemRow? = jdbi().handleSync {
-    createQuery("SELECT id, name, description FROM items WHERE id = :id")
-      .bind("id", id.value)
-      .map { rs, _ -> ItemRow(ItemId(rs.getLong("id")), rs.getString("name"), rs.getString("description")) }
-      .findOne()
-      .orElse(null)
+    return ItemRow(id = ItemId(id))
   }
 
   fun deleteAll() {
