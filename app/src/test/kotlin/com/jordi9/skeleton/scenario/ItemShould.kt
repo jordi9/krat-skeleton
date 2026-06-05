@@ -13,10 +13,13 @@ class ItemShould : ScenarioStringSpec<GivenItem, WhenItem, ThenItem, ItemContext
 
   "create an item" {
     Given.`no items exist`()
-    When.`creating an item`("Buy milk", "From the store")
+    When.`creating an item`("Buy milk", "From the store", priority = "high")
     Then.`the item was created`()
+      .and().`the item id is public`()
       .and().`the item has name`("Buy milk")
       .and().`the item has description`("From the store")
+      .and().`the item has priority`("high")
+      .and().`timestamps are current`()
       .and().`a notification was sent`("Item created: Buy milk")
   }
 
@@ -26,6 +29,13 @@ class ItemShould : ScenarioStringSpec<GivenItem, WhenItem, ThenItem, ItemContext
     Then.`the item was created`()
       .and().`the item has name`("Buy milk")
       .and().`the item has no description`()
+      .and().`the item has priority`("normal")
+  }
+
+  "reject invalid item priority" {
+    Given.`no items exist`()
+    When.`creating an item with invalid priority`()
+    Then.`the response is bad request`()
   }
 
   "return items after creating them" {
@@ -46,7 +56,7 @@ class ItemShould : ScenarioStringSpec<GivenItem, WhenItem, ThenItem, ItemContext
 
   "return 404 when item does not exist" {
     Given.`no items exist`()
-    When.`getting item with invalid id`()
+    When.`getting item by unknown id`()
     Then.`the response is not found`()
   }
 })

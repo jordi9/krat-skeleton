@@ -13,7 +13,7 @@ class GetItemHandler(
 ) : Handler {
 
   override suspend fun handle(call: ApplicationCall) {
-    val id: Long by call.parameters
+    val id: String by call.parameters
     val item = getItem(ItemId(id))
     call.respond(item.toResponse())
   }

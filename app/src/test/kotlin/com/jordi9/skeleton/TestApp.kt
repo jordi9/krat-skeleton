@@ -8,6 +8,10 @@ import com.jordi9.skeleton.feature.greeting.inbound.GreetingConfig
 import com.jordi9.skeleton.shared.outbound.metrics.MeterRegistryProvider
 import io.kotest.core.listeners.ProjectListener
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.logging.DEFAULT
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
 import io.ktor.server.config.ApplicationConfig
@@ -51,6 +55,7 @@ fun createTestApp(stubs: TestStubs): TestApplication = TestApplication {
           openTelemetry = stubs.openTelemetry.provider.get()
         ),
         timeClock = stubs.clock,
+        nanoId = stubs.nanoId,
         meterRegistryProvider = MeterRegistryProvider(),
         openTelemetryProvider = stubs.openTelemetry.provider
       )
@@ -61,6 +66,10 @@ fun createTestApp(stubs: TestStubs): TestApplication = TestApplication {
 fun httpClient(): HttpClient = SkeletonTestApp.createClient {
   install(ClientContentNegotiation) {
     json()
+  }
+  install(Logging) {
+    logger = Logger.DEFAULT
+    level = LogLevel.ALL
   }
 }
 

@@ -9,6 +9,7 @@ import com.jordi9.krat.time.TimeClock
 import com.jordi9.skeleton.feature.item.domain.NotificationClient
 import com.jordi9.skeleton.feature.item.outbound.LogNotificationClient
 import com.jordi9.skeleton.feature.item.outbound.registerItemMappers
+import com.jordi9.skeleton.shared.domain.NanoId
 import com.jordi9.skeleton.shared.outbound.metrics.MeterRegistryProvider
 import io.micrometer.core.instrument.binder.MeterBinder
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
@@ -18,6 +19,7 @@ import org.jdbi.v3.core.Jdbi
 class Registry(
   val notificationClient: NotificationClient,
   val timeClock: TimeClock,
+  val nanoId: NanoId,
   private val openTelemetryProvider: OpenTelemetryProvider,
   private val meterRegistryProvider: MeterRegistryProvider,
   private val jdbiProvider: JdbiProvider
@@ -50,6 +52,7 @@ fun Registry(database: DatabaseConfig, tracing: OpenTelemetryConfig): Registry {
       meterRegistry = meterRegistryProvider.get()
     ),
     timeClock = SystemTime,
+    nanoId = NanoId(),
     meterRegistryProvider = meterRegistryProvider,
     openTelemetryProvider = openTelemetryProvider
   )

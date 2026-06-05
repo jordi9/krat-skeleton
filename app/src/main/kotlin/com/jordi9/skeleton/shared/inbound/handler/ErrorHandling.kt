@@ -5,17 +5,27 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.server.application.Application
 import io.ktor.server.application.ApplicationCall
 import io.ktor.server.application.install
+import io.ktor.server.plugins.BadRequestException
+import io.ktor.server.plugins.ContentTransformationException
 import io.ktor.server.plugins.MissingRequestParameterException
 import io.ktor.server.plugins.statuspages.StatusPages
 import io.ktor.server.response.respond
 import io.opentelemetry.api.trace.Span
 import io.opentelemetry.api.trace.StatusCode
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 
 fun Application.installErrorHandling() {
   install(StatusPages) {
     exception<ItemNotFoundException> { call, e -> call.clientError(HttpStatusCode.NotFound, e) }
     exception<IllegalArgumentException> { call, e -> call.clientError(HttpStatusCode.BadRequest, e) }
+    exception<ContentTransformationException> { call, e ->
+      call.clientError(HttpStatusCode.BadRequest, e, "Invalid request body")
+    }
+    exception<SerializationException> { call, e ->
+      call.clientError(HttpStatusCode.BadRequest, e, "Invalid request body")
+    }
+    exception<BadRequestException> { call, e -> call.clientError(HttpStatusCode.BadRequest, e, e.message) }
     exception<MissingRequestParameterException> { call, e ->
       call.clientError(HttpStatusCode.BadRequest, e, "Missing parameter: ${e.parameterName}")
     }
@@ -37,4 +47,6 @@ private suspend fun ApplicationCall.serverError(status: HttpStatusCode, e: Throw
 }
 
 @Serializable
-private data class ErrorResponse(val error: String)
+private data class ErrorResponse(
+  val error: String
+)

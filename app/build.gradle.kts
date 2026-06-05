@@ -18,6 +18,7 @@ dependencies {
 
   implementation(libs.krat.pack.core)
   implementation(libs.krat.pack.cors)
+  implementation(libs.krat.pack.otel)
   implementation(libs.krat.logging)
   implementation(libs.krat.otel)
   implementation(libs.krat.time)
@@ -46,6 +47,7 @@ dependencies {
   testImplementation(libs.kotest.assertions.core)
   testImplementation(libs.ktor.server.test.host)
   testImplementation(libs.ktor.client.content.negotiation)
+  testImplementation(libs.ktor.client.logging)
   testImplementation(libs.krat.kogiven)
   testImplementation(libs.krat.time.testlib)
   testImplementation(libs.krat.pack.testlib)
@@ -60,7 +62,10 @@ spotless {
   ratchetFrom("origin/main")
 }
 
-application { mainClass.set("io.ktor.server.netty.EngineMain") }
+application {
+  mainClass.set("io.ktor.server.netty.EngineMain")
+  applicationDefaultJvmArgs = listOf("--enable-native-access=ALL-UNNAMED")
+}
 
 tasks.named<JavaExec>("run") {
   workingDir = rootProject.projectDir

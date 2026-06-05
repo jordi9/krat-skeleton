@@ -78,8 +78,8 @@ paths:
           in: path
           required: true
           schema:
-            type: integer
-            format: int64
+            type: string
+            example: item_0123456789ABCDEabcde_
       responses:
         '200':
           description: Item details
@@ -139,13 +139,16 @@ components:
       type: object
       properties:
         id:
-          type: integer
-          format: int64
+          type: string
+          example: item_0123456789ABCDEabcde_
         name:
           type: string
         description:
           type: string
           nullable: true
+        priority:
+          type: string
+          enum: [low, normal, high]
         createdAt:
           type: string
         updatedAt:
@@ -161,3 +164,7 @@ components:
         description:
           type: string
           nullable: true
+        priority:
+          type: string
+          enum: [low, normal, high]
+          default: normal

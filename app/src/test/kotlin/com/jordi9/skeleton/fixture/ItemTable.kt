@@ -2,30 +2,30 @@ package com.jordi9.skeleton.fixture
 
 import com.jordi9.krat.jdbi.handleSync
 import com.jordi9.skeleton.feature.item.domain.ItemId
+import com.jordi9.skeleton.feature.item.outbound.ItemPriorityMapper
 import com.jordi9.skeleton.jdbi
-import org.jdbi.v3.core.kotlin.mapTo
 
 data class ItemRow(val id: ItemId)
 
 object ItemTable {
 
   fun insert(example: ItemExample): ItemRow {
-    val id = jdbi().handleSync {
-      createQuery(
+    jdbi().handleSync {
+      createUpdate(
         """
-        INSERT INTO items (name, description, created_at, updated_at)
-        VALUES (:name, :description, :createdAt, :updatedAt)
-        RETURNING id
+        INSERT INTO items (id, name, description, priority, created_at, updated_at)
+        VALUES (:id, :name, :description, :priority, :createdAt, :updatedAt)
         """.trimIndent()
       )
+        .bind("id", example.id.value)
         .bind("name", example.name)
         .bind("description", example.description)
+        .bind("priority", ItemPriorityMapper.toDatabase(example.priority))
         .bind("createdAt", example.createdAt.toEpochMilli())
         .bind("updatedAt", example.updatedAt.toEpochMilli())
-        .mapTo<Long>()
-        .one()
+        .execute()
     }
-    return ItemRow(id = ItemId(id))
+    return ItemRow(id = example.id)
   }
 
   fun deleteAll() {

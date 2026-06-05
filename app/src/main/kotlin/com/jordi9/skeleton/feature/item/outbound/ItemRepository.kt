@@ -1,7 +1,6 @@
 package com.jordi9.skeleton.feature.item.outbound
 
 import com.jordi9.krat.jdbi.handle
-import com.jordi9.krat.time.TimeClock
 import com.jordi9.skeleton.Registry
 import com.jordi9.skeleton.feature.item.domain.Item
 import com.jordi9.skeleton.feature.item.domain.ItemId
@@ -13,8 +12,7 @@ import java.sql.ResultSet
 import java.time.Instant
 
 class ItemRepository(
-  private val jdbi: Jdbi,
-  private val clock: TimeClock
+  private val jdbi: Jdbi
 ) {
 
   suspend fun findAll(): List<Item> = jdbi.handle {
@@ -31,18 +29,20 @@ class ItemRepository(
       .orElse(null)
   }
 
-  suspend fun save(name: String, description: String?): Item = jdbi.handle {
-    val now = clock.now().toEpochMilli()
+  suspend fun save(item: Item): Item = jdbi.handle {
     createQuery(
       """
-      INSERT INTO items (name, description, created_at, updated_at)
-      VALUES (:name, :description, :now, :now)
+      INSERT INTO items (id, name, description, priority, created_at, updated_at)
+      VALUES (:id, :name, :description, :priority, :createdAt, :updatedAt)
       RETURNING *
       """.trimIndent()
     )
-      .bind("name", name)
-      .bind("description", description)
-      .bind("now", now)
+      .bind("id", item.id.value)
+      .bind("name", item.name)
+      .bind("description", item.description)
+      .bind("priority", ItemPriorityMapper.toDatabase(item.priority))
+      .bind("createdAt", item.createdAt.toEpochMilli())
+      .bind("updatedAt", item.updatedAt.toEpochMilli())
       .mapTo<Item>()
       .one()
   }
@@ -55,17 +55,17 @@ class ItemRepository(
 class ItemRowMapper : RowMapper<Item> {
 
   override fun map(rs: ResultSet, ctx: StatementContext): Item = Item(
-    id = ItemId(rs.getLong("id")),
+    id = ItemId(rs.getString("id")),
     name = rs.getString("name"),
     description = rs.getString("description"),
+    priority = ItemPriorityMapper.toDomain(rs.getString("priority")),
     createdAt = Instant.ofEpochMilli(rs.getLong("created_at")),
     updatedAt = Instant.ofEpochMilli(rs.getLong("updated_at"))
   )
 }
 
 fun ItemRepository(registry: Registry) = ItemRepository(
-  jdbi = registry.jdbi,
-  clock = registry.timeClock
+  jdbi = registry.jdbi
 )
 
 internal fun registerItemMappers(jdbi: Jdbi) {

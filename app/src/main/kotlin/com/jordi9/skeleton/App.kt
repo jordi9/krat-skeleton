@@ -8,6 +8,7 @@ import com.jordi9.krat.pack.core.healthChecks
 import com.jordi9.krat.pack.core.post
 import com.jordi9.krat.pack.cors.CorsConfig
 import com.jordi9.krat.pack.cors.installCors
+import com.jordi9.krat.pack.otel.startupTracer
 import com.jordi9.skeleton.feature.greeting.inbound.GreetingConfig
 import com.jordi9.skeleton.feature.greeting.inbound.HelloHandler
 import com.jordi9.skeleton.feature.item.inbound.CreateItemHandler
@@ -17,7 +18,6 @@ import com.jordi9.skeleton.shared.inbound.handler.installErrorHandling
 import com.jordi9.skeleton.shared.inbound.health.DatabaseHealthCheck
 import com.jordi9.skeleton.shared.inbound.metrics.MetricsHandler
 import com.jordi9.skeleton.shared.outbound.db.runDatabaseMigrations
-import com.jordi9.skeleton.shared.outbound.tracing.withStartupTracer
 import io.github.smiley4.ktorredoc.redoc
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.server.application.Application
@@ -43,8 +43,8 @@ fun Application.server(
   cors: CorsConfig = config("cors"),
   registry: Registry = Registry(database, tracing)
 ) {
-  withStartupTracer(registry.openTelemetry, tracing.serviceName) {
-    runDatabaseMigrations(this, database.url)
+  startupTracer(registry.openTelemetry) { tracer ->
+    runDatabaseMigrations(tracer, database.url)
 
     installContentNegotiation()
     installCors(cors)
